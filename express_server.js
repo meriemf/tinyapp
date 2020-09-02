@@ -43,10 +43,29 @@ app.get("/hello", (req, res) => {
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   //save shortURL and longURL into urlDatabase
-  urlDatabase[generateRandomString()] = req.body.longURL;
-  console.log(urlDatabase);
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
-  
+  let key = generateRandomString();
+  urlDatabase[key] = req.body.longURL;
+  res.redirect(`/u/${key}`);                                 //res.send("Ok");         // Respond with 'Ok' (we will replace this)
+ //res.redirect(`/u/${rurlDatabase[key]}`);
 });
+// app.get("/u/:shortURL", (req, res) => {
+//   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+//   res.render("urls_show", templateVars);
+// })
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  //console.log(longURL);
+  res.redirect(`https://${longURL}`);
+});
+app.post ("/urls/:shortURL/delete",(req, res) => {
+  //remove the url from urlDatabase
+  let shortURL = req.params.shortURL;
+  delete urlDatabase.shortURL;
+  console.log(urlDatabase);
+//  delete urlDatabase[req.params.shortURL];
+  res.redirect ("/urls");
 
-
+})
+// app.get ("/urls/:shortURL/delete", (req, res) => {
+//   res.redirect("urls");
+// })
